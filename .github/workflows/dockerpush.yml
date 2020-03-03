@@ -20,21 +20,21 @@ env:
 jobs:
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  test:
-    runs-on: windows-latest
+  # test:
+  #   runs-on: windows-latest
 
-    steps:
-      - uses: actions/checkout@v2
+  #   steps:
+  #     - uses: actions/checkout@v2
 
-      - name: Run tests
-        run: |
-          if (Test-Path docker-compose.test.yml) {
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          }
-          else {
-            docker build . --file Dockerfile
-          }
+  #     - name: Run tests
+  #       run: |
+  #         if (Test-Path docker-compose.test.yml) {
+  #           docker-compose --file docker-compose.test.yml build
+  #           docker-compose --file docker-compose.test.yml run sut
+  #         }
+  #         else {
+  #           docker build . --file Dockerfile
+  #         }
 
   # Push image to GitHub Package Registry.
   # See also https://docs.docker.com/docker-hub/builds/
@@ -67,5 +67,5 @@ jobs:
           echo IMAGE_ID=$IMAGE_ID
           echo VERSION=$VERSION
 
-          docker tag advancedinstaller $IMAGE_ID:$VERSION
+          docker tag advancedinstaller $($IMAGE_ID):$($VERSION)
           docker push $IMAGE_ID:$VERSION
