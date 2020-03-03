@@ -42,21 +42,21 @@ jobs:
     # Ensure test job passes before pushing image.
     # needs: test
 
-    runs-on: windows-latest
+    runs-on: windows-2019
     if: github.event_name == 'push'
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag advancedinstaller
+        run: docker build . --file Dockerfile --tag "dockerimage"
 
       - name: Log into registry
-        run: Write-Host "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
 
       - name: Push image
         run: |
-          $IMAGE_ID="docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME"
+          $IMAGE_ID="docker.pkg.github.com/${{ github.repository }}/$($env:IMAGE_NAME)"
 
           # Strip git ref prefix from version
           $VERSION='16.8'
@@ -64,8 +64,10 @@ jobs:
           # Use Docker `latest` tag convention
           # [ "$VERSION" == "master" ] && VERSION=latest
 
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
+          echo "IMAGE_ID=$IMAGE_ID"
+          echo "VERSION=$VERSION"
 
-          docker tag advancedinstaller $($IMAGE_ID):$($VERSION)
-          docker push $($IMAGE_ID):$($VERSION)
+          docker tag "dockerimage" "$($IMAGE_ID):$($VERSION)"
+          docker images
+          docker inspect "dockerimage"
+          docker push "$($IMAGE_ID):$($VERSION)"
