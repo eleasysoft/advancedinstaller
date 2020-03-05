@@ -53,7 +53,7 @@ jobs:
 
       - name: Log into registry
         # run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login docker.pkg.github.com -u louvard --password-stdin
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u louvard --password-stdin
 
       - name: Push image
         # docker hub muss verwendet werden weil GitHub nicht zu recht kommt mit windows server.
