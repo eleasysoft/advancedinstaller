@@ -52,11 +52,13 @@ jobs:
         run: docker build . --file Dockerfile --tag "dockerimage"
 
       - name: Log into registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        # run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login docker.pkg.github.com -u louvard --password-stdin
 
       - name: Push image
+        # docker hub muss verwendet werden weil GitHub nicht zu recht kommt mit windows server.
         run: |
-          $IMAGE_ID="docker.pkg.github.com/${{ github.repository }}/$($env:IMAGE_NAME)"
+          $IMAGE_ID="louvard/$($env:IMAGE_NAME)"
 
           # Strip git ref prefix from version
           $VERSION='16.8'
