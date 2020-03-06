@@ -20,21 +20,27 @@ env:
 jobs:
   # Run tests.
   # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-  # test:
-  #   runs-on: windows-latest
+  test:
+    runs-on: windows-2019
 
-  #   steps:
-  #     - uses: actions/checkout@v2
+    steps:
+      - uses: actions/checkout@v2
 
-  #     - name: Run tests
-  #       run: |
-  #         if (Test-Path docker-compose.test.yml) {
-  #           docker-compose --file docker-compose.test.yml build
-  #           docker-compose --file docker-compose.test.yml run sut
-  #         }
-  #         else {
-  #           docker build . --file Dockerfile
-  #         }
+      - name: Run build
+        # https://www.advancedinstaller.com/user-guide/command-line.html
+        run: |
+          docker build . --file Dockerfile --tag "dockertestimage"
+
+      - name: Run help
+        # https://www.advancedinstaller.com/user-guide/command-line.html
+        run: |
+          docker run . docker run dockertestimage 'AdvancedInstaller.com' /HELP
+
+      - name: Run tests
+        # https://www.advancedinstaller.com/user-guide/command-line.html
+        run: |
+          docker run . docker run dockertestimage 'AdvancedInstaller.com' /build .\tests\hello-world.aip
+          Get-ChildItem -Recurse .
 
   # Push image to GitHub Package Registry.
   # See also https://docs.docker.com/docker-hub/builds/
@@ -59,12 +65,7 @@ jobs:
         # docker hub muss verwendet werden weil GitHub nicht zu recht kommt mit windows server.
         run: |
           $IMAGE_ID="louvard/$($env:IMAGE_NAME)"
-
-          # Strip git ref prefix from version
           $VERSION='16.8'
-
-          # Use Docker `latest` tag convention
-          # [ "$VERSION" == "master" ] && VERSION=latest
 
           echo "IMAGE_ID=$IMAGE_ID"
           echo "VERSION=$VERSION"
