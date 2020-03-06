@@ -39,7 +39,7 @@ jobs:
       - name: Run tests
         # https://www.advancedinstaller.com/user-guide/command-line.html
         run: |
-          docker run dockertestimage 'AdvancedInstaller.com' /build .\tests\hello-world.aip
+          docker run -v tests:C:\tests dockertestimage 'AdvancedInstaller.com' /build C:\tests\hello-world.aip
           Get-ChildItem -Recurse .
 
   # Push image to GitHub Package Registry.
