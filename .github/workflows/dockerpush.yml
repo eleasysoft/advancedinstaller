@@ -16,6 +16,7 @@ on:
 env:
   # TODO: Change variable to your image's name.
   IMAGE_NAME: advancedinstaller
+  DOCKERHUB_REPOSITORY: louvard
 
 jobs:
   # Run tests.
@@ -29,18 +30,19 @@ jobs:
       - name: Run build
         # https://www.advancedinstaller.com/user-guide/command-line.html
         run: |
-          docker build . --file Dockerfile --tag "dockertestimage"
+          docker build . --file Dockerfile --tag "$($env:IMAGE_NAME)"
 
       - name: Run help
         # https://www.advancedinstaller.com/user-guide/command-line.html
         run: |
-          docker run dockertestimage 'AdvancedInstaller.com' /HELP
+          docker run "$($env:IMAGE_NAME)" 'AdvancedInstaller.com' /HELP
 
       - name: Run tests
         # https://www.advancedinstaller.com/user-guide/command-line.html
+        # build an msi Package from the aip Projektfile.
         run: |
-          docker run -v "$(Get-Location)\tests:C:\tests" dockertestimage 'AdvancedInstaller.com' /build C:\tests\hello-world.aip
-          Get-ChildItem -Recurse .
+          docker run -v "$(Get-Location)\tests:C:\tests" "$($env:IMAGE_NAME)" 'AdvancedInstaller.com' /build C:\tests\hello-world.aip
+          Get-Item ".\tests\hello-world-SetupFiles\Hello World.msi"
 
   # Push image to GitHub Package Registry.
   # See also https://docs.docker.com/docker-hub/builds/
@@ -55,20 +57,20 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag "dockerimage"
+        run: docker build . --file Dockerfile --tag "$($env:IMAGE_NAME)"
 
       - name: Log into registry
         # run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u louvard --password-stdin
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u ${{ secrets.DOCKERHUB_LOGINID }} --password-stdin
 
       - name: Push image
         # docker hub muss verwendet werden weil GitHub nicht zu recht kommt mit windows server.
         run: |
-          $IMAGE_ID="louvard/$($env:IMAGE_NAME)"
+          $IMAGE_ID="$($env:DOCKERHUB_REPOSITORY)/$($env:IMAGE_NAME)"
           $VERSION='16.8'
 
           echo "IMAGE_ID=$IMAGE_ID"
           echo "VERSION=$VERSION"
 
-          docker tag "dockerimage" "$($IMAGE_ID):$($VERSION)"
+          docker tag "$($env:IMAGE_NAME)" "$($IMAGE_ID):$($VERSION)"
           docker push "$($IMAGE_ID):$($VERSION)"
