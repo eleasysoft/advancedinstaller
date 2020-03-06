@@ -70,6 +70,4 @@ jobs:
           echo "VERSION=$VERSION"
 
           docker tag "dockerimage" "$($IMAGE_ID):$($VERSION)"
-          docker images
-          docker inspect "dockerimage"
           docker push "$($IMAGE_ID):$($VERSION)"
