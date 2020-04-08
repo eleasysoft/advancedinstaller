@@ -10,7 +10,7 @@
 # docker run -v C:\local-wokspace:C:\workspace advancedinstaller:v16.8 'AdvancedInstaller.com' /execute C:\workspace\Setup\Setup.aip c:\workspace\Setup\Setup.aip.aic
 
 FROM mcr.microsoft.com/windows/servercore:ltsc2019
-ARG ADVINST_VERSION=16.8
+ARG ADVINST_VERSION=16.9
 ARG ADVINST_DOWNLOAD_SHA256=F1F01B1C10B44B3CCC67FF897205D346C3DFB458036F4D61552262AC3AEA32C7
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
