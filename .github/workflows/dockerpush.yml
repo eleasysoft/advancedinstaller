@@ -67,7 +67,7 @@ jobs:
         # docker hub muss verwendet werden weil GitHub nicht zu recht kommt mit windows server.
         run: |
           $IMAGE_ID="$($env:DOCKERHUB_REPOSITORY)/$($env:IMAGE_NAME)"
-          $VERSION='16.8'
+          $VERSION='16.9'
 
           echo "IMAGE_ID=$IMAGE_ID"
           echo "VERSION=$VERSION"
